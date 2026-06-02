@@ -1,0 +1,6 @@
+<% if (messages && messages.success && messages.success.length > 0) { %>
+  <div class="flash flash-success"><%= messages.success[0] %></div>
+<% } %>
+<% if (messages && messages.error && messages.error.length > 0) { %>
+  <div class="flash flash-error"><%= messages.error[0] %></div>
+<% } %>

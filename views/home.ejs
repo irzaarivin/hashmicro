@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> — KaryawanApp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<%- include('partials/sidebar') %>
+<main class="main-content">
+  <header class="topbar">
+    <h1 class="page-title">Dashboard</h1>
+  </header>
+  <%- include('partials/flash', { messages }) %>
+  <div class="content-body">
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Karyawan</div>
+        <div class="stat-value"><%= stats.total %></div>
+        <div class="stat-sub">semua record</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Karyawan Aktif</div>
+        <div class="stat-value accent"><%= stats.activeCount %></div>
+        <div class="stat-sub"><%= stats.activeRate %>% dari total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Rata-rata Gaji</div>
+        <div class="stat-value accent2" style="font-size:22px; padding-top:5px">
+          <%= new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',minimumFractionDigits:0}).format(stats.avgSalary) %>
+        </div>
+        <div class="stat-sub">per karyawan</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Departemen</div>
+        <div class="stat-value success"><%= stats.departments.length %></div>
+        <div class="stat-sub">departemen aktif</div>
+      </div>
+    </div>
+
+    <% if (stats.departments.length > 0) { %>
+    <div class="card">
+      <div class="card-title">Statistik per Departemen</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Departemen</th>
+              <th>Jumlah</th>
+              <th>Rata-rata Gaji</th>
+              <th>% Aktif</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% stats.departments.forEach(d => { %>
+            <tr>
+              <td class="name-cell"><%= d.name %></td>
+              <td><%= d.count %></td>
+              <td>
+                <%= new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',minimumFractionDigits:0}).format(d.avgSalary) %>
+              </td>
+              <td>
+                <%= d.activeRate %>%
+                <div class="dept-bar"><div class="dept-bar-fill" style="width:<%= d.activeRate %>%"></div></div>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <% } %>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
+      <a href="/employees" class="btn btn-primary">↗ Kelola Karyawan</a>
+      <a href="/employees/create" class="btn">+ Tambah Karyawan</a>
+      <a href="/checker" class="btn">◎ Character Checker</a>
+    </div>
+
+  </div>
+</main>
+<script src="/js/main.js"></script>
+</body>
+</html>

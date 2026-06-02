@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> — KaryawanApp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">K</span>
+      <span class="brand-name">Karyawan<br/><strong>App</strong></span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="/" class="nav-item <%= currentPath === '/' ? 'active' : '' %>">
+        <span class="nav-icon">⬡</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="/employees" class="nav-item <%= currentPath.startsWith('/employees') ? 'active' : '' %>">
+        <span class="nav-icon">◈</span>
+        <span>Karyawan</span>
+      </a>
+      <a href="/checker" class="nav-item <%= currentPath.startsWith('/checker') ? 'active' : '' %>">
+        <span class="nav-icon">◎</span>
+        <span>Char Checker</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span>MVC · Sequelize · EJS</span>
+    </div>
+  </aside>
+
+  <!-- ── Main ────────────────────────────────────────────────────── -->
+  <main class="main-content">
+    <header class="topbar">
+      <h1 class="page-title"><%= title %></h1>
+    </header>
+
+    <!-- Flash Messages -->
+    <% if (messages && messages.success && messages.success.length > 0) { %>
+      <div class="flash flash-success"><%= messages.success[0] %></div>
+    <% } %>
+    <% if (messages && messages.error && messages.error.length > 0) { %>
+      <div class="flash flash-error"><%= messages.error[0] %></div>
+    <% } %>
+
+    <div class="content-body">
+      <%- body %>
+    </div>
+  </main>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

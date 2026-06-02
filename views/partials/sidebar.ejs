@@ -1,0 +1,38 @@
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <span class="brand-icon">K</span>
+    <span class="brand-name">Karyawan<br/><strong>App</strong></span>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="/" class="nav-item <%= currentPath === '/' ? 'active' : '' %>">
+      <span class="nav-icon">⬡</span>
+      <span>Dashboard</span>
+    </a>
+    <a href="/employees" class="nav-item <%= currentPath && currentPath.startsWith('/employees') ? 'active' : '' %>">
+      <span class="nav-icon">◈</span>
+      <span>Karyawan</span>
+    </a>
+    <a href="/checker" class="nav-item <%= currentPath && currentPath.startsWith('/checker') ? 'active' : '' %>">
+      <span class="nav-icon">◎</span>
+      <span>Char Checker</span>
+    </a>
+  </nav>
+
+  <% if (typeof sessionUser !== 'undefined' && sessionUser) { %>
+  <div class="sidebar-user">
+    <div class="sidebar-user-avatar"><%= sessionUser.username.charAt(0).toUpperCase() %></div>
+    <div class="sidebar-user-info">
+      <div class="sidebar-user-name"><%= sessionUser.username %></div>
+      <div class="sidebar-user-email"><%= sessionUser.email %></div>
+    </div>
+  </div>
+  <div style="padding: 0 10px 12px;">
+    <a href="/logout" class="sidebar-logout">
+      <span>⎋</span>
+      <span>Logout</span>
+    </a>
+  </div>
+  <% } %>
+
+  <div class="sidebar-footer">MVC · Sequelize · EJS</div>
+</aside>

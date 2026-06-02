@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= title %> — KaryawanApp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<% const currentPath = '/employees'; %>
+<%- include('../partials/sidebar') %>
+<main class="main-content">
+  <header class="topbar">
+    <h1 class="page-title"><%= employee.name %></h1>
+  </header>
+  <%- include('../partials/flash', { messages }) %>
+  <div class="content-body">
+
+    <div style="display:flex;gap:10px;margin-bottom:20px;align-items:center">
+      <a href="/employees" class="btn btn-sm">← Kembali</a>
+      <a href="/employees/<%= employee.id %>/edit" class="btn btn-sm btn-primary">Edit</a>
+      <form
+        action="/employees/<%= employee.id %>?_method=DELETE"
+        method="POST"
+        data-confirm="Hapus karyawan <%= employee.name %>?"
+        style="margin-left:auto"
+      >
+        <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+      </form>
+    </div>
+
+    <div class="card" style="padding:0">
+      <div style="padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px">
+        <div style="width:52px;height:52px;background:var(--accent);color:#000;font-family:var(--font-head);font-weight:800;font-size:22px;display:flex;align-items:center;justify-content:center">
+          <%= employee.name.charAt(0).toUpperCase() %>
+        </div>
+        <div>
+          <div style="font-family:var(--font-head);font-size:18px;font-weight:700"><%= employee.name %></div>
+          <div style="color:var(--text-muted);font-size:13px"><%= employee.position %> · <%= employee.department %></div>
+        </div>
+        <div style="margin-left:auto">
+          <span class="badge badge-<%= employee.status %>">
+            <%= employee.status === 'on_leave' ? 'Cuti' : employee.status === 'active' ? 'Aktif' : 'Nonaktif' %>
+          </span>
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-item">
+          <div class="detail-label">Email</div>
+          <div class="detail-value"><%= employee.email %></div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Posisi</div>
+          <div class="detail-value"><%= employee.position %></div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Departemen</div>
+          <div class="detail-value"><%= employee.department %></div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Gaji</div>
+          <div class="detail-value" style="color:var(--accent)">
+            <%= new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',minimumFractionDigits:0}).format(employee.salary) %>
+          </div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Tanggal Bergabung</div>
+          <div class="detail-value">
+            <%= new Date(employee.hire_date).toLocaleDateString('id-ID',{year:'numeric',month:'long',day:'numeric'}) %>
+          </div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Status</div>
+          <div class="detail-value">
+            <span class="badge badge-<%= employee.status %>">
+              <%= employee.status === 'on_leave' ? 'Cuti' : employee.status === 'active' ? 'Aktif' : 'Nonaktif' %>
+            </span>
+          </div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Dibuat</div>
+          <div class="detail-value">
+            <%= new Date(employee.createdAt).toLocaleDateString('id-ID',{year:'numeric',month:'long',day:'numeric'}) %>
+          </div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Diperbarui</div>
+          <div class="detail-value">
+            <%= new Date(employee.updatedAt).toLocaleDateString('id-ID',{year:'numeric',month:'long',day:'numeric'}) %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+<script src="/js/main.js"></script>
+</body>
+</html>

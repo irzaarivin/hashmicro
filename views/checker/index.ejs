@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= title %> — KaryawanApp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<% const currentPath = '/checker'; %>
+<%- include('../partials/sidebar') %>
+<main class="main-content">
+  <header class="topbar">
+    <h1 class="page-title">Character Checker</h1>
+  </header>
+  <div class="content-body">
+
+    <div style="border:1px solid var(--border);padding:14px 18px;margin-bottom:24px;background:var(--surface);font-size:13px;color:var(--text-muted);line-height:1.7">
+      Masukkan dua string. Sistem menghitung berapa persen karakter dari <strong style="color:var(--text)">Input 1</strong>
+      yang muncul di <strong style="color:var(--text)">Input 2</strong>.
+      Gunakan <strong style="color:var(--accent)">Sensitive</strong> untuk pembeda huruf besar/kecil,
+      <strong style="color:var(--accent2)">Non-Sensitive</strong> untuk mengabaikannya.
+    </div>
+
+    <div class="card">
+      <div class="card-title">Input</div>
+
+      <form action="/checker" method="POST">
+        <div class="checker-form">
+          <div class="form-group">
+            <label for="input1">Input 1 (sumber)</label>
+            <input
+              type="text"
+              id="input1"
+              name="input1"
+              value="<%= formData.input1 || '' %>"
+              placeholder="contoh: ABBCD"
+              required
+              style="font-family:var(--font-head);font-size:18px;letter-spacing:0.1em"
+            />
+          </div>
+          <div class="form-group">
+            <label for="input2">Input 2 (target)</label>
+            <input
+              type="text"
+              id="input2"
+              name="input2"
+              value="<%= formData.input2 || '' %>"
+              placeholder="contoh: Gallant Duck"
+              required
+              style="font-family:var(--font-head);font-size:18px;letter-spacing:0.05em"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Tipe Perbandingan</label>
+          <div class="case-toggle" style="max-width:320px">
+            <button
+              type="button"
+              class="case-btn <%= (!formData.case_type || formData.case_type === 'sensitive') ? 'selected' : '' %>"
+              data-value="sensitive"
+            >Sensitive Case</button>
+            <button
+              type="button"
+              class="case-btn <%= (formData.case_type === 'non_sensitive') ? 'selected' : '' %>"
+              data-value="non_sensitive"
+            >Non-Sensitive</button>
+          </div>
+          <input type="hidden" name="case_type" value="<%= formData.case_type || 'sensitive' %>" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">▶ Hitung</button>
+      </form>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+    <div class="error-list"><p>⚠ <%= error %></p></div>
+    <% } %>
+
+    <% if (result) { %>
+    <div class="result-panel">
+      <div class="result-header">
+        <div>
+          <div style="font-family:var(--font-head);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">
+            Hasil
+          </div>
+          <div class="result-pct"><%= result.percentage %>%</div>
+          <div class="result-meta">
+            <%= result.matchedCount %> dari <%= result.totalChars %> karakter Input 1
+            ditemukan di Input 2
+            (<%= result.caseSensitive ? 'sensitive case' : 'non-sensitive case' %>)
+          </div>
+          <% if (result.matchedChars.length > 0) { %>
+          <div style="margin-top:10px;font-size:12px;color:var(--text-muted)">
+            Karakter yang cocok:
+            <% result.matchedChars.forEach(c => { %>
+              <span style="display:inline-block;margin-left:4px;background:rgba(74,255,140,0.15);color:var(--success);padding:2px 8px;font-family:var(--font-head);font-size:13px;font-weight:700">
+                <%= c === ' ' ? '(spasi)' : c %>
+              </span>
+            <% }) %>
+          </div>
+          <% } %>
+        </div>
+
+        <div style="text-align:right">
+          <svg width="80" height="80" viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="32" fill="none" stroke="var(--border)" stroke-width="6"/>
+            <circle
+              cx="40" cy="40" r="32"
+              fill="none"
+              stroke="var(--accent)"
+              stroke-width="6"
+              stroke-dasharray="<%= Math.round((result.percentage / 100) * 201) %> 201"
+              stroke-dashoffset="50"
+              transform="rotate(-90 40 40)"
+            />
+            <text x="40" y="45" text-anchor="middle" font-family="Syne" font-size="13" font-weight="800" fill="var(--accent)">
+              <%= result.percentage %>%
+            </text>
+          </svg>
+        </div>
+      </div>
+
+      <div style="padding:16px 20px 6px;border-bottom:1px solid var(--border)">
+        <div style="font-family:var(--font-head);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px">
+          Trace per karakter (Input 1)
+        </div>
+        <div class="steps-grid">
+          <% result.steps.forEach(step => { %>
+            <div class="step-char <%= step.found ? 'found' : 'missed' %> <%= step.char === ' ' ? 'is-space' : '' %>" title="Indeks <%= step.index %>: <%= step.found ? 'DITEMUKAN' : 'tidak ditemukan' %>">
+              <span class="step-idx"><%= step.index %></span>
+              <%= step.char === ' ' ? '·' : step.char %>
+            </div>
+          <% }) %>
+        </div>
+        <div style="display:flex;gap:16px;padding:12px 0 4px;font-size:11px;color:var(--text-muted)">
+          <span style="color:var(--success)">■ Ditemukan</span>
+          <span style="color:var(--text-muted)">■ Tidak ditemukan</span>
+        </div>
+      </div>
+
+      <div style="padding:20px;font-size:13px;color:var(--text-muted);line-height:1.8">
+        <strong style="color:var(--text);font-family:var(--font-head)">Cara Kerja Algoritma:</strong><br/>
+        1. <strong style="color:var(--text-dim)">Outer loop</strong> iterasi tiap karakter di Input 1 (<code style="background:var(--surface2);padding:1px 5px"><%= result.input1 %></code>) — total <strong><%= result.totalChars %></strong> karakter<br/>
+        2. <strong style="color:var(--text-dim)">Inner loop (nested)</strong> scan tiap karakter di Input 2 untuk mencari kecocokan<br/>
+        3. <strong style="color:var(--text-dim)">Nested if</strong> membandingkan secara <%= result.caseSensitive ? '<strong>exact (case-sensitive)</strong>' : '<strong>toLowerCase() (non-sensitive)</strong>' %><br/>
+        4. <strong style="color:var(--text-dim)">Matematika:</strong> (<%= result.matchedCount %> / <%= result.totalChars %>) × 100 = <strong style="color:var(--accent)"><%= result.percentage %>%</strong>
+      </div>
+    </div>
+    <% } %>
+
+  </div>
+</main>
+<script src="/js/main.js"></script>
+</body>
+</html>
