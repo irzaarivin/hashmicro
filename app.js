@@ -27,13 +27,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride('_method'));
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'fallback-secret',
+  secret: 'mvc-app-secret-key-2024',
   resave: false,
   saveUninitialized: false,
-  cookie: {
-    maxAge: 60 * 60 * 1000,
-    secure: process.env.NODE_ENV === 'production',
-  },
+  cookie: { maxAge: 60 * 60 * 1000 },
 }));
 app.use(flash());
 
